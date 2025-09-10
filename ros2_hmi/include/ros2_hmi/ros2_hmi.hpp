@@ -22,6 +22,7 @@
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <moveit/move_group_interface/move_group_interface.hpp>
 #include <moveit/planning_scene_interface/planning_scene_interface.hpp>
+#include <moveit/robot_model_loader/robot_model_loader.hpp>
 
 #include <sensor_msgs/msg/joint_state.hpp>
 
@@ -53,6 +54,8 @@ namespace ros2_hmi {
     private:
         void configure_gui();
         void connect_button(const QString &button_name, void (Ros2Hmi::*callback)());
+        void moveJoint(int joint_index, double increment);
+        void executeMovement();
 
         QUiLoader *loader;
         QFile *file;
@@ -60,6 +63,10 @@ namespace ros2_hmi {
         // QPushButton *joint1Btn, *joint2Btn, *joint3Btn, *joint4Btn, *joint5Btn, *joint6Btn;
 
         std::shared_ptr<rclcpp::Node> node_;
+        std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
+        std::vector<double> current_joint_positions_;
+        const double joint_increment_ = 0.1; // radians
+        const std::string planning_group_ = "arm"; // Default group name
 
         std::string package_path_;
         std::thread execution_thread_;

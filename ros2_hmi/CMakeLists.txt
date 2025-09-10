@@ -81,9 +81,20 @@ install(DIRECTORY launch ui
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(ament_cmake_gtest REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  # Add MoveIt integration test
+  ament_add_gtest(test_moveit_integration test/test_moveit_integration.cpp)
+  target_include_directories(test_moveit_integration
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  )
+  ament_target_dependencies(test_moveit_integration
+    rclcpp
+    moveit_ros_planning_interface
+  )
 endif()
 
 ament_package()
